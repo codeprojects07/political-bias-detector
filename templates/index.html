@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Political Bias Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Political Bias Analyzer</h1>
+
+    <form method="POST">
+        <label for="url">Enter a news article URL (optional):</label>
+        <input type="url" name="url" placeholder="https://example.com/article">
+
+        <label for="manual_text">Or paste article text here:</label>
+        <textarea name="manual_text" rows="10" placeholder="Paste the article text here..."></textarea>
+
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if result %}
+    <div class="result">
+        {% if result.error %}
+            <p style="color:red">{{ result.error }}</p>
+        {% else %}
+            <h3>Results (Source: {{ result.source }})</h3>
+            <p><strong>Bias:</strong> {{ result.bias }}</p>
+            <p><strong>Sentiment Score:</strong> {{ result.sentiment }}</p>
+
+            {% if result.phrases %}
+                <p><strong>Examples of Biased Phrases Detected:</strong></p>
+                <ul>
+                    {% for phrase in result.phrases %}
+                        <li>{{ phrase }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No strong bias-indicating phrases were found.</p>
+            {% endif %}
+
+            <p><strong>Article Snippet:</strong></p>
+            <p>{{ result.snippet }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>
