@@ -3,46 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title>Political Bias Analyzer</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Political Bias Analyzer</h1>
+    <div class="container">
+        <h1>🗞️ Political Bias Analyzer</h1>
 
-    <form method="POST">
-        <label for="url">Enter a news article URL (optional):</label>
-        <input type="url" name="url" placeholder="https://example.com/article">
+        <form method="POST">
+            <label for="url">🔗 Enter a news article URL (optional):</label>
+            <input type="url" name="url" placeholder="https://example.com/article" />
 
-        <label for="manual_text">Or paste article text here:</label>
-        <textarea name="manual_text" rows="10" placeholder="Paste the article text here..."></textarea>
+            <label for="manual_text">📝 Or paste article text:</label>
+            <textarea name="manual_text" rows="10" placeholder="Paste article text here..."></textarea>
 
-        <button type="submit">Analyze</button>
-    </form>
+            <button type="submit">Analyze</button>
+        </form>
 
-    {% if result %}
-    <div class="result">
-        {% if result.error %}
-            <p style="color:red">{{ result.error }}</p>
-        {% else %}
-            <h3>Results (Source: {{ result.source }})</h3>
-            <p><strong>Bias:</strong> {{ result.bias }}</p>
-            <p><strong>Sentiment Score:</strong> {{ result.sentiment }}</p>
+        {% if result %}
+            <div class="results">
+                {% if result.error %}
+                    <p class="error">{{ result.error }}</p>
+                {% else %}
+                    <h2>Results</h2>
+                    <p><strong>Bias:</strong> {{ result.bias }}</p>
 
-            {% if result.phrases %}
-                <p><strong>Examples of Biased Phrases Detected:</strong></p>
-                <ul>
-                    {% for phrase in result.phrases %}
-                        <li>{{ phrase }}</li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No strong bias-indicating phrases were found.</p>
-            {% endif %}
+                    {% if result.keywords %}
+                        <h4>Detected Political Keywords</h4>
+                        <ul>
+                            <li><strong>Left:</strong> {{ result.keywords.left }}</li>
+                            <li><strong>Right:</strong> {{ result.keywords.right }}</li>
+                            <li><strong>Center:</strong> {{ result.keywords.center }}</li>
+                        </ul>
+                    {% endif %}
 
-            <p><strong>Article Snippet:</strong></p>
-            <p>{{ result.snippet }}</p>
+                    <p><strong>Source:</strong> {{ result.source }}</p>
+                    <p><strong>Snippet:</strong> {{ result.snippet }}</p>
+
+                    {% if chart_url %}
+                        <img src="{{ url_for('static', filename='chart.png') }}" alt="Bias Chart" class="chart-img" />
+                    {% endif %}
+                {% endif %}
+            </div>
         {% endif %}
     </div>
-    {% endif %}
 </body>
 </html>
